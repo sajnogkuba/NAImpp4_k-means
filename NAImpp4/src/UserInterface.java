@@ -6,7 +6,7 @@ public class UserInterface extends JFrame {
     public UserInterface(){
         JPanel north = new JPanel(new FlowLayout());
         JFileChooser jFileChooser = new JFileChooser("./");
-        jFileChooser.setFileFilter(new FileNameExtensionFilter("CSV Files", ".csv"));
+        jFileChooser.setFileFilter(new FileNameExtensionFilter("CSV Files", "csv"));
         JButton selectFile = new JButton("Select file with data");
         selectFile.addActionListener((event) -> {
             jFileChooser.showOpenDialog(this);

@@ -1,15 +1,12 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class KMeans {
     private final File dataFile;
     private final int groupsCount;
     private final List<double[]> data;
     private final List<Group> currentGroups;
-    private final List<Group> previousGroups;
+    private List<Group> previousGroups;
 
     public KMeans(File dataFile, int groupsCount) {
         this.dataFile = dataFile;
@@ -20,49 +17,76 @@ public class KMeans {
         loadDataFromFile();
         generateGroups();
         assignToGroups();
+
+        for (int i = 0; !identicalGroups() ; i++) {
+            if(i == 1000){
+                int x = 5;
+            }
+            previousGroups = new ArrayList<>();
+            for (Group currentGroup : currentGroups) {
+                previousGroups.add(new Group(currentGroup.getCentroid(), currentGroup.getInGroup()));
+            }
+            System.out.println("Iteration " + (i + 1));
+            System.out.println("Current Groups:");
+            for (int i1 = 0; i1 < currentGroups.size(); i1++) {
+                System.out.println("Group " + (i1 + 1));
+                System.out.println(currentGroups.get(i1));
+                currentGroups.get(i1).calculateCentroid();
+            }
+            assignToGroups();
+        }
+    }
+
+    public boolean identicalGroups() {
+        if(currentGroups.size() != previousGroups.size()){
+            return false;
+        }
+        for (int i = 0; i < currentGroups.size(); i++) {
+            if(!currentGroups.get(i).equals(previousGroups.get(i))){
+                return false;
+            }
+        }
+        return true;
     }
 
     private void assignToGroups() {
-        Map<Group, Double> distances = new HashMap<>();
-        data.forEach(data -> {
-            currentGroups.forEach(group -> {
-                distances.put(group, calculateDistance(group, data));
-            });
-        });
-        System.out.println(distances);
+        for (Group currentGroup : currentGroups) {
+            currentGroup.clearValues();
+        }
+        for (double[] d : data) {
+            Map<Group, Double> distances = new HashMap<>();
+            for (Group group : currentGroups) {
+                distances.put(group, calculateDistance(group, d));
+            }
+            double minDistance = 99999999;
+            for (Double value : distances.values()) {
+                if (value < minDistance) {
+                    minDistance = value;
+                }
+            }
+            Group assignTo = null;
+            for (Group group : distances.keySet()) {
+                if (distances.get(group) == minDistance) {
+                    assignTo = group;
+                }
+            }
+            assignTo.addToGroup(d);
+        }
     }
 
     private Double calculateDistance(Group group, double[] data) {
         double[] centroid = group.getCentroid();
         double distance = 0;
         for (int i = 0; i < centroid.length; i++) {
-            distance += Math.pow((centroid[i] + data[i]), 2);
+            distance += Math.pow((centroid[i] - data[i]), 2);
         }
         return distance;
     }
 
     private void generateGroups() {
-        for (double[] generatedCentroid : generateCentroids()) {
-            currentGroups.add(new Group(generatedCentroid));
-        }
-    }
-
-    private List<double[]> generateCentroids() {
-        List<double[]> centroids = new ArrayList<>(groupsCount);
-        for(int i = 0; i < groupsCount; i++){
-            double[] centroid = new double[data.getFirst().length];
-            for (int j = 0; j < centroid.length; j++) {
-                centroid[j] = Math.random();
-            }
-            centroids.add(centroid);
-        }
-        return centroids;
-//        centroids.forEach((centroid) -> {
-//            for (double v : centroid) {
-//                System.out.print(v + " ");
-//            }
-//            System.out.println();
-//        });
+        currentGroups.add(new Group(data.getFirst()));
+        currentGroups.add(new Group(data.get(1)));
+        currentGroups.add(new Group(data.get(2)));
     }
 
     private void loadDataFromFile() {

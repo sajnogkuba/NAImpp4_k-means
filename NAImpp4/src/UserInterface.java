@@ -17,14 +17,21 @@ public class UserInterface extends JFrame {
         });
         JComboBox<Integer> kValues = new JComboBox<>(new Integer[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15});
         compute.setEnabled(false);
+        JTextArea center = new JTextArea();
         compute.addActionListener(
-                (event) -> kMeans = new KMeans(jFileChooser.getSelectedFile(), (Integer) kValues.getSelectedItem())
+                (event) -> {
+                    kMeans = new KMeans(jFileChooser.getSelectedFile(), (Integer) kValues.getSelectedItem());
+                    center.setText("Final Groups:\n" + kMeans.getGroups());
+                    this.repaint();
+                }
+
         );
         JLabel kLabel = new JLabel("How many groups do you want?");
-        JTextArea center = new JTextArea();
-        center.setEnabled(false);
-        center.setPreferredSize(new Dimension(200, 300));
+        center.setEnabled(true);
         JScrollPane jScrollPane = new JScrollPane(center);
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane.setPreferredSize(new Dimension(300, 500));
 
 
         north.add(selectFile);

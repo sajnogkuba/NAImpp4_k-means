@@ -113,4 +113,18 @@ public class KMeans {
     public String toString() {
         return dataFile.getAbsolutePath() + "       k = " + groupsCount;
     }
+
+    public String getGroups() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i1 = 0; i1 < currentGroups.size(); i1++) {
+            stringBuilder.append("Group ")
+                    .append(i1 + 1)
+                    .append("\n")
+                    .append(currentGroups.get(i1))
+                    .append("\nthe sum of squares of the distances: ")
+                    .append(currentGroups.get(i1).sumOfDistancesSquares())
+                    .append("\n");
+        }
+        return stringBuilder.toString();
+    }
 }

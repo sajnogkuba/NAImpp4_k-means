@@ -62,6 +62,16 @@ public class Group {
         }
     }
 
+    public double sumOfDistancesSquares(){
+        double sum = 0;
+        for (double[] vector : inGroup) {
+            for (int i = 0; i < vector.length; i++) {
+                sum += Math.pow((centroid[i] - vector[i]), 2);
+            }
+        }
+        return sum;
+    }
+
     public void clearValues(){
         this.inGroup = new ArrayList<>();
     }

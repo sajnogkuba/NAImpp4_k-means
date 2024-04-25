@@ -19,9 +19,6 @@ public class KMeans {
         assignToGroups();
 
         for (int i = 0; !identicalGroups() ; i++) {
-            if(i == 1000){
-                int x = 5;
-            }
             previousGroups = new ArrayList<>();
             for (Group currentGroup : currentGroups) {
                 previousGroups.add(new Group(currentGroup.getCentroid(), currentGroup.getInGroup()));
@@ -31,6 +28,8 @@ public class KMeans {
             for (int i1 = 0; i1 < currentGroups.size(); i1++) {
                 System.out.println("Group " + (i1 + 1));
                 System.out.println(currentGroups.get(i1));
+                System.out.println("the sum of squares of the distances: " + currentGroups.get(i1).sumOfDistancesSquares());
+                System.out.println();
                 currentGroups.get(i1).calculateCentroid();
             }
             assignToGroups();
